@@ -47,6 +47,10 @@ public class SignupForm {
         this.feh = feh;
     }
 
+    public void setVisible(boolean b) {
+        frame.setVisible(b);
+    }
+
     /**
      * Initialize the contents of the frame.
      */
@@ -61,31 +65,33 @@ public class SignupForm {
         lblUsername.setBounds(43, 44, 64, 20);
         frame.getContentPane().add(lblUsername);
 
-        JLabel lblPassword = new JLabel("Password");
+        /* JLabel lblPassword = new JLabel("Password");
         lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblPassword.setBounds(43, 75, 64, 14);
         frame.getContentPane().add(lblPassword);
+        */
 
         txtUsername = new JTextField();
         txtUsername.setBounds(122, 44, 164, 20);
         frame.getContentPane().add(txtUsername);
         txtUsername.setColumns(10);
 
-        txtPassword = new JPasswordField();
+        /* txtPassword = new JPasswordField();
         txtPassword.setBounds(122, 73, 164, 20);
         frame.getContentPane().add(txtPassword);
+        */
 
         JButton btnSubmit = new JButton("Submit");
         btnSubmit.setBounds(70, 116, 89, 23);
         frame.getContentPane().add(btnSubmit);
         btnSubmit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String password = txtPassword.getText();
+                //String password = txtPassword.getText();
                 String username = txtUsername.getText();
 
-                System.out.println(password + username);
+                //System.out.println(password + username);
 
-                if (password == null || username == null) {
+                if (username == null) {
                     JOptionPane.showMessageDialog(
                         null, "Invalid Signup", "Signup Errorr", JOptionPane.ERROR_MESSAGE);
                     txtPassword.setText(null);
@@ -93,9 +99,7 @@ public class SignupForm {
                 }
 
                 else {
-                    LoginForm message = new LoginForm();
-                    message.setVisible(true);
-                    frame.setVisible(false);
+                    feh.signup(username);
                 }
             }
         });
@@ -109,7 +113,7 @@ public class SignupForm {
                 if (JOptionPane.showConfirmDialog(frame, "Confirm if you want to exit",
                         "Login System", JOptionPane.YES_NO_OPTION)
                     == JOptionPane.YES_NO_OPTION) {
-                    System.exit(0);
+                    feh.call_shutdown();
                 }
             }
         });

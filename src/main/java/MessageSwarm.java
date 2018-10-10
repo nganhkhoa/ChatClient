@@ -20,11 +20,15 @@ public class MessageSwarm extends Subscriber {
         this.obs = obs;
         peers = new LinkedList<Subscriber>();
 
-        try {
-            // create a socket server to listen
-            serversocket = new ServerSocket(PORT);
-        } catch (IOException ex) {
-            // pass
+        while(true){
+            try {
+                // create a socket server to listen
+                serversocket = new ServerSocket(PORT);
+                break;
+            } catch (IOException ex) {
+                PORT += 1;
+                continue;
+            }
         }
     }
 

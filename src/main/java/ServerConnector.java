@@ -50,7 +50,7 @@ public class ServerConnector extends Subscriber {
             if (r.task().equals("exit"))
                 break;
 
-            if (!isLoggedIn) {
+            if (!isLoggedIn && !r.task().equals("signup")) {
                 if (!r.task().equals("signin"))
                     continue;
 
@@ -70,9 +70,9 @@ public class ServerConnector extends Subscriber {
                 // enough information to signin
                 sreq = new ServerRequest(
                     "signin", Arrays.asList(username, password, IP, Integer.toString(port)));
-            } else
+            } else{
                 sreq = new ServerRequest(r.task(), r.param());
-
+            }
             try {
                 String json_msg = gson.toJson(sreq);
                 byte[] encoded_msg = Base64.getEncoder().encode(json_msg.getBytes());
@@ -94,7 +94,7 @@ public class ServerConnector extends Subscriber {
             }
 
             // process sres
-            if (!isLoggedIn) {
+            if (!isLoggedIn && !r.task().equals("signup")) {
                 if (sres.success()) {
                     isLoggedIn = true;
                     r.answer(true);
@@ -109,6 +109,16 @@ public class ServerConnector extends Subscriber {
             }
 
             // now the user is logged in and requesting
+            if(sreq.getTask() == "signup") {
+                r.answer(sres.success(), sres.getResult());
+                obs.send_answer(r.from(), r);
+            }
+
+            else if (sreq.getTask() == "getip") {
+                r.answer(sres.success(), sres.getResult());
+                obs.send_answer(r.from(), r);
+            }
+
         }
 
         System.out.println("[SC]::Shutting down");

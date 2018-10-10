@@ -94,6 +94,11 @@ public class LoginForm {
         JButton btnSignUp = new JButton("Sign up");
         btnSignUp.setBounds(137, 116, 89, 23);
         frame.getContentPane().add(btnSignUp);
+        btnSignUp.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                feh.showSignUpForm();
+            }
+        });
 
         JButton btnExit = new JButton("Exit");
         btnExit.setBounds(237, 116, 89, 23);

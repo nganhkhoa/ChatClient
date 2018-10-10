@@ -36,6 +36,29 @@ public class FrontendHandler extends Subscriber {
             loginForm.setVisible(false);
             messageForm.setVisible(true);
         }
+
+        else if(r.task().equals("signup")){
+            if(!r.success())
+                return;
+            System.out.println(r.result().get(0));
+            loginForm.setVisible(true);
+            signupForm.setVisible(false);
+            messageForm.setVisible(false); 
+        }
+
+        else if(r.task().equals("getip")){
+            if(!r.success())
+                messageForm.Error("Error getip!");
+            else
+                messageForm.newNotifier(r.result().get(0) + ":" + r.result().get(1) );
+        }
+
+    }
+
+    public void showSignUpForm() {
+        loginForm.setVisible(false);
+        messageForm.setVisible(false);
+        signupForm.setVisible(true);
     }
 
     public void login(String username, String password) {
@@ -43,7 +66,19 @@ public class FrontendHandler extends Subscriber {
             se, ServiceEnum.SERVER_CONNECTOR, "signin", Arrays.asList(username, password)));
     }
 
+    public void signup(String username) {
+        obs.notify(new InternalRequest(
+            se, ServiceEnum.SERVER_CONNECTOR, "signup", Arrays.asList(username)));
+    }
+
+    public void getIP(String name){
+        obs.notify(new InternalRequest(
+            se, ServiceEnum.SERVER_CONNECTOR, "getip", Arrays.asList(name)));
+    }
+
+   
     public void call_shutdown() {
         obs.shutdown();
     }
+
 }
