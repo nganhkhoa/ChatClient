@@ -96,7 +96,7 @@ public class LoginForm {
         frame.getContentPane().add(btnSignUp);
         btnSignUp.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                feh.showSignUpForm();
+                feh.showForm(FormType.SIGNUP_FORM);
             }
         });
 

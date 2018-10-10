@@ -1,0 +1,1 @@
+public enum FormType { LOGIN_FORM, SIGNUP_FORM, MESSAGE_FORM }

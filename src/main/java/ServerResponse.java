@@ -47,4 +47,8 @@ public class ServerResponse {
     public boolean success() {
         return success;
     }
+
+    public String toString() {
+        return success + ":" + result;
+    }
 }

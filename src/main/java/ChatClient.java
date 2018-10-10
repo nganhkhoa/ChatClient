@@ -12,7 +12,7 @@ public class ChatClient {
         Subscriber frontendHandler;
 
         try {
-            server = new ServerConnector(observer);
+            server = new ServerConnector(observer, "localhost");
         } catch (IOException e) {
             System.out.println("Cannot connect to server");
             return;
@@ -38,19 +38,6 @@ public class ChatClient {
         messageSwarm.start();
         frontendHandler.start();
 
-        // Scanner scanner = new Scanner(System.in);
-        // String input;
-        // while (true) {
-        //     input = scanner.nextLine();
-        //     if (input.equals("exit")) {
-        //         observer.shutdown();
-        //         break;
-        //     }
-
-        //     Answer ans = new Answer();
-        //     observer.notify(new Request(0, input), ans);
-        // }
-
         try {
             server.join();
             messageSwarm.join();
@@ -58,5 +45,8 @@ public class ChatClient {
         } catch (InterruptedException e) {
             // pass
         }
+
+        System.out.println("ALL PROCESS SHUTDOWN");
+        System.out.println("NO ERROR DETECTED");
     }
 }
