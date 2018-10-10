@@ -22,26 +22,21 @@ public class ServerConnector extends Subscriber {
     private String IP; // of message swarm
     private int port; // from message swarm
 
-    public ServerConnector(Observer obs) throws IOException {
+    public ServerConnector(Observer obs, String serverAddress) throws IOException {
         this.obs = obs;
         this.se = ServiceEnum.SERVER_CONNECTOR;
         gson = new Gson();
 
         // server ip
-        ip = InetAddress.getByName("localhost");
+        ip = InetAddress.getByName(serverAddress);
 
         s = new Socket(ip, 7789);
         dis = new DataInputStream(s.getInputStream());
         dos = new DataOutputStream(s.getOutputStream());
-
-        IP = s.getLocalAddress().getHostAddress();
     }
 
     public void run() {
-        // notify first request that I have started
-
         while (!shutdown) {
-            // System.out.println("Wait for request");
             InternalRequest r = wait_request();
             ServerRequest sreq;
             ServerResponse sres = null;
@@ -50,13 +45,16 @@ public class ServerConnector extends Subscriber {
             if (r.task().equals("exit"))
                 break;
 
-            if (!isLoggedIn) {
+            if (!isLoggedIn && !r.task().equals("signup")) {
                 if (!r.task().equals("signin"))
                     continue;
 
-                if (r.from() == ServiceEnum.MESSAGE_SWARM)
-                    port = Integer.parseInt(r.param().get(0));
-                else {
+                if (r.from() == ServiceEnum.MESSAGE_SWARM) {
+                    if (r.param().size() != 2)
+                        continue;
+                    IP = r.param().get(0);
+                    port = Integer.parseInt(r.param().get(1));
+                } else if (r.from() == ServiceEnum.FRONTEND_HANDLER) {
                     // set username and password
                     if (r.param().size() != 2)
                         continue;
@@ -70,9 +68,9 @@ public class ServerConnector extends Subscriber {
                 // enough information to signin
                 sreq = new ServerRequest(
                     "signin", Arrays.asList(username, password, IP, Integer.toString(port)));
-            } else
+            } else {
                 sreq = new ServerRequest(r.task(), r.param());
-
+            }
             try {
                 String json_msg = gson.toJson(sreq);
                 byte[] encoded_msg = Base64.getEncoder().encode(json_msg.getBytes());
@@ -93,8 +91,10 @@ public class ServerConnector extends Subscriber {
                 continue;
             }
 
+            System.out.println("[SC]::SERVER:" + sres);
+
             // process sres
-            if (!isLoggedIn) {
+            if (!isLoggedIn && !r.task().equals("signup")) {
                 if (sres.success()) {
                     isLoggedIn = true;
                     r.answer(true);
@@ -109,6 +109,15 @@ public class ServerConnector extends Subscriber {
             }
 
             // now the user is logged in and requesting
+            if (sreq.getTask() == "signup") {
+                r.answer(sres.success(), sres.getResult());
+                obs.send_answer(r.from(), r);
+            }
+
+            else if (sreq.getTask() == "getip") {
+                r.answer(sres.success(), sres.getResult());
+                obs.send_answer(r.from(), r);
+            }
         }
 
         System.out.println("[SC]::Shutting down");

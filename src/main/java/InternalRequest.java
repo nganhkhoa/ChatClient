@@ -33,11 +33,15 @@ public class InternalRequest {
     }
 
     public String toString() {
-        return from + "." + task + "(" + param + ")";
+        if (result == null)
+            return from + "." + task + "(" + param + ")";
+        else
+            return to + "." + task + "(" + param + "):" + (success ? "+" : "-") + result;
     }
 
     public void answer(boolean success) {
         this.success = success;
+        this.result = Arrays.asList();
     }
 
     public void answer(boolean success, List<String> result) {

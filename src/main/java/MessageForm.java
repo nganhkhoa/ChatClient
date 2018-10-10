@@ -87,6 +87,12 @@ public class MessageForm {
         JButton btnGo = new JButton("Go");
         btnGo.setBounds(352, 30, 100, 23);
         frame.getContentPane().add(btnGo);
+        btnGo.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String name = txtName.getText();
+                feh.getIP(name);
+            }
+        });
 
         txtareaShow_message = new JTextArea();
         txtareaShow_message.setBounds(10, 76, 458, 280);
