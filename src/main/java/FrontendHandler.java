@@ -23,6 +23,10 @@ public class FrontendHandler extends Subscriber {
             System.out.println("[FEH]::" + r);
             if (r.task().equals("exit"))
                 break;
+
+            if (r.task().equals("newmessage")) {
+                // new message
+            }
         }
 
         loginForm.setVisible(false);
@@ -46,8 +50,16 @@ public class FrontendHandler extends Subscriber {
         } else if (r.task().equals("getip")) {
             if (!r.success())
                 messageForm.Error("Error getip!");
-            else
+            else {
                 messageForm.newNotifier(r.result().get(0) + ":" + r.result().get(1));
+                String username = r.param.get(0);
+                String ip = r.result().get(0);
+                String port = r.result().get(0);
+
+                // sends a record to MessageHandler to saves IP and port of people
+                obs.notify(new InternalRequest(se, ServiceEnum.MESSAGE_HANDLER, "newrecord",
+                    Arrays.asList(username, ip, port)));
+            }
         }
     }
 
@@ -84,6 +96,11 @@ public class FrontendHandler extends Subscriber {
     public void getIP(String name) {
         obs.notify(
             new InternalRequest(se, ServiceEnum.SERVER_CONNECTOR, "getip", Arrays.asList(name)));
+    }
+
+    public void sendMessage(String to, String msg) {
+        obs.notify(new InternalRequest(
+            se, ServiceEnum.MESSAGE_HANDLER, "sendmessage", Arrays.asList(to, msg)));
     }
 
     public void call_shutdown() {

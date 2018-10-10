@@ -16,6 +16,9 @@ public abstract class Subscriber extends Thread
         process_queue.add(r);
     }
 
+    /// special one for MessageHandler
+    public void receive_message(Message m) {}
+
     public void receive_answer(InternalRequest r) {}
 
     public InternalRequest wait_request() {
