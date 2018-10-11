@@ -53,8 +53,8 @@ public class MessageForm {
         frame.setVisible(b);
     }
 
-    public void newMessage(String message) {
-        txtareaShow_message.append("[You]: ");
+    public void newMessage(String user, String message) {
+        txtareaShow_message.append("[" + user + "]: ");
         txtareaShow_message.append(message);
         txtareaShow_message.append("\n");
     }
@@ -121,6 +121,7 @@ public class MessageForm {
                 txtareaShow_message.append(message);
                 txtareaShow_message.append("\n");
                 txtInput_message.setText(null);
+                feh.sendMessage(message);
             }
         });
 

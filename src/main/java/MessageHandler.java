@@ -24,7 +24,7 @@ public class MessageHandler extends Subscriber {
 
     Gson gson = new Gson();
 
-    public void MessageHandler(Observer obs) {
+    public MessageHandler(Observer obs) throws IOException {
         this.obs = obs;
         this.se = ServiceEnum.MESSAGE_HANDLER;
     }

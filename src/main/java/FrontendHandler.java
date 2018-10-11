@@ -5,6 +5,8 @@ public class FrontendHandler extends Subscriber {
     final MessageForm messageForm;
     final SignupForm signupForm;
 
+    String currentChatUser;
+
     public FrontendHandler(Observer obs) {
         this.obs = obs;
         this.se = ServiceEnum.FRONTEND_HANDLER;
@@ -26,6 +28,9 @@ public class FrontendHandler extends Subscriber {
 
             if (r.task().equals("newmessage")) {
                 // new message
+                String username = r.param().get(0);
+                String msg = r.param().get(1);
+                messageForm.newMessage(username, msg);
             }
         }
 
@@ -54,7 +59,9 @@ public class FrontendHandler extends Subscriber {
                 messageForm.newNotifier(r.result().get(0) + ":" + r.result().get(1));
                 String username = r.param.get(0);
                 String ip = r.result().get(0);
-                String port = r.result().get(0);
+                String port = r.result().get(1);
+
+                currentChatUser = username;
 
                 // sends a record to MessageHandler to saves IP and port of people
                 obs.notify(new InternalRequest(se, ServiceEnum.MESSAGE_HANDLER, "newrecord",
@@ -98,9 +105,9 @@ public class FrontendHandler extends Subscriber {
             new InternalRequest(se, ServiceEnum.SERVER_CONNECTOR, "getip", Arrays.asList(name)));
     }
 
-    public void sendMessage(String to, String msg) {
+    public void sendMessage(String msg) {
         obs.notify(new InternalRequest(
-            se, ServiceEnum.MESSAGE_HANDLER, "sendmessage", Arrays.asList(to, msg)));
+            se, ServiceEnum.MESSAGE_HANDLER, "sendmessage", Arrays.asList(currentChatUser, msg)));
     }
 
     public void call_shutdown() {
