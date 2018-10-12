@@ -84,6 +84,7 @@ public class MessageHandler extends Subscriber {
                         dos.writeUTF(tosend);
                     } catch (IOException ex) {
                         // pass
+                        // TODO: After send file, stuck here?
                     }
                 }
             }
@@ -111,6 +112,7 @@ public class MessageHandler extends Subscriber {
                     }
                 }
 
+                System.out.println("[MH]::Sending file");
                 byte[] buffer = new byte[BUFFER_SIZE];
                 for (DataOutputStream dos : c.dos) {
                     try {
@@ -119,11 +121,13 @@ public class MessageHandler extends Subscriber {
                             // System.out.println("file : " + buffer);
                             dos.write(buffer);
                         }
+                        dos.flush();
                         fis.close();
                     } catch (IOException ex) {
                         // pass
                     }
                 }
+                System.out.println("[MH]::Send file complete");
             }
         }
 
@@ -176,8 +180,12 @@ public class MessageHandler extends Subscriber {
         // Connection c = connection.get(m.from);
 
         // sends to FrontEndHandler to display
-        obs.notify(new InternalRequest(
-            se, ServiceEnum.FRONTEND_HANDLER, "newmessage", Arrays.asList(m.from, m.msg)));
+        if (m.file != null)
+            obs.notify(new InternalRequest(
+                se, ServiceEnum.FRONTEND_HANDLER, "newfile", Arrays.asList(m.from, m.file)));
+        else
+            obs.notify(new InternalRequest(
+                se, ServiceEnum.FRONTEND_HANDLER, "newmessage", Arrays.asList(m.from, m.msg)));
     }
 
     private void create_socket(Connection c) {

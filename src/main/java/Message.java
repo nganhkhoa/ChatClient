@@ -1,5 +1,6 @@
 import java.util.*;
 import java.lang.*;
+import java.io.*;
 
 public class Message {
     public String from;
@@ -27,10 +28,10 @@ public class Message {
             this.msg = tosend;
             this.len = tosend.length();
         } else {
-            this.file = tosend;
-            // read file to set len
-            // InputStream is = new FileInputStream(file);
-            // read file to calculate checksum (MD5 maybe?)
+            File f = new File(tosend);
+            this.file = f.getName();
+            this.len = (int) f.length();
+            this.checksum = "";
         }
     }
 

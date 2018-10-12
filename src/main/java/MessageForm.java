@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JTextPane;
 import javax.swing.JTextArea;
 import javax.swing.JPanel;
+import javax.swing.JFileChooser;
 import java.awt.TextArea;
 import java.awt.Window;
 import java.awt.event.ActionListener;
@@ -174,10 +175,26 @@ public class MessageForm {
         JButton btnBorrow_File = new JButton("...");
         btnBorrow_File.setBounds(431, 427, 79, 23);
         frame.getContentPane().add(btnBorrow_File);
+        btnBorrow_File.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                JFileChooser filedilg = new JFileChooser();
+                filedilg.showOpenDialog(filedilg);
+                String filename = filedilg.getSelectedFile().getAbsolutePath(); // path of file
+                txtNamefile.setText(filename);
+                // File file1 = new File(filename);
+                // fname = file1.getName(); // filename
+                // System.out.println("THE FILE NAME IS " + fname);
+            }
+        });
 
         JButton btnSend_1 = new JButton("Send");
         btnSend_1.setBounds(524, 427, 79, 23);
         frame.getContentPane().add(btnSend_1);
+        btnSend_1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                feh.sendFile(txtNamefile.getText());
+            }
+        });
 
         JButton btnExit = new JButton("Exit");
         btnExit.setBounds(493, 7, 100, 25);

@@ -68,6 +68,27 @@ public class FrontendHandler extends Subscriber {
                         messageLog.get(username).addFirst(log_msg);
                 }
             }
+
+            else if (r.task().equals("newfile")) {
+                // new file
+                String username = r.param().get(0);
+                String file = r.param().get(1);
+                String log_msg = "[" + username + "]:FILE: " + file;
+
+                if (username.equals(currentChatUser)) {
+                    messageForm.newMessage(username, log_msg);
+                    messageLog.get(username).addFirst(log_msg);
+                }
+
+                else {
+                    messageForm.setnewNotify(username);
+                    messageForm.newNotifier(username);
+                    if (!messageLog.containsKey(username)) {
+                        messageLog.put(username, new LinkedList<String>(Arrays.asList(log_msg)));
+                    } else
+                        messageLog.get(username).addFirst(log_msg);
+                }
+            }
         }
 
         loginForm.setVisible(false);

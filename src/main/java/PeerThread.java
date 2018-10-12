@@ -22,10 +22,10 @@ public class PeerThread extends Subscriber {
     Gson gson;
 
     // only for receiving files
-    boolean sendFileFlag = false;
     int fileSize = 0;
     String fileName;
     String checksum;
+    String fileSender;
 
     PeerThread(Socket socket, DataInputStream dis, Observer obs) {
         this.socket = socket;
@@ -41,10 +41,6 @@ public class PeerThread extends Subscriber {
     public void run() {
         while (!shutdown) {
             try {
-                if (sendFileFlag) {
-                    receive_file();
-                }
-
                 Message msg = null;
 
                 // wait for message from peer
@@ -53,10 +49,11 @@ public class PeerThread extends Subscriber {
                 msg = gson.fromJson(json_msg, Message.class);
 
                 if (msg.file != null) {
-                    sendFileFlag = true;
                     fileName = msg.file;
                     fileSize = msg.len;
                     checksum = msg.checksum;
+                    fileSender = msg.from;
+                    receive_file();
                 }
 
                 System.out.println("[P]:[" + socket.getRemoteSocketAddress() + "]:" + msg);
@@ -75,11 +72,12 @@ public class PeerThread extends Subscriber {
     }
 
     private void receive_file() throws IOException {
-
+        FileOutputStream fos = new FileOutputStream(fileName);
         byte[] buffer = new byte[BYTE_SIZE];
         int read = 0;
         int totalRead = 0;
         int remaining = fileSize;
+        System.out.println("[P]::Receiving file");
         while ((read = dis.read(buffer, 0, Math.min(buffer.length, remaining))) > 0) {
             totalRead += read;
             remaining -= read;
@@ -87,5 +85,6 @@ public class PeerThread extends Subscriber {
             fos.write(buffer, 0, read);
         }
         fos.close();
+        System.out.println("[P]::Received file");
     }
 }
