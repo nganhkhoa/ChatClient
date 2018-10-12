@@ -13,12 +13,14 @@ import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JTextPane;
 
 public class LoginForm {
     private JFrame frame;
     private JTextField txtUsername;
     private JTextField txtPassword;
     private FrontendHandler feh;
+    int term = 0;
 
     /**
      * Launch the application.
@@ -50,6 +52,11 @@ public class LoginForm {
     public void setVisible(boolean b) {
         frame.setVisible(b);
     }
+    
+    public void close() {
+    	WindowEvent winClosingEvent = new WindowEvent(this.frame,WindowEvent.WINDOW_CLOSING);
+    	Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(winClosingEvent);
+    }
 
     /**
      * Initialize the contents of the frame.
@@ -80,19 +87,18 @@ public class LoginForm {
         frame.getContentPane().add(txtPassword);
 
         JButton btnLogIn = new JButton("Log in");
-        btnLogIn.setBounds(37, 116, 89, 23);
+        btnLogIn.setBounds(43, 122, 89, 23);
         frame.getContentPane().add(btnLogIn);
         btnLogIn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String username = txtUsername.getText();
                 String password = txtPassword.getText();
-
                 feh.login(username, password);
             }
         });
 
         JButton btnSignUp = new JButton("Sign up");
-        btnSignUp.setBounds(137, 116, 89, 23);
+        btnSignUp.setBounds(143, 122, 89, 23);
         frame.getContentPane().add(btnSignUp);
         btnSignUp.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -101,17 +107,21 @@ public class LoginForm {
         });
 
         JButton btnExit = new JButton("Exit");
-        btnExit.setBounds(237, 116, 89, 23);
+        btnExit.setBounds(243, 122, 89, 23);
         frame.getContentPane().add(btnExit);
+        
+        JLabel lblNoticeError = new JLabel("");
+        lblNoticeError.setBounds(122, 97, 164, 14);
+        frame.getContentPane().add(lblNoticeError);
         btnExit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame = new JFrame("Exit");
                 if (JOptionPane.showConfirmDialog(frame, "Confirm if you want to exit",
                         "Login System", JOptionPane.YES_NO_OPTION)
                     == JOptionPane.YES_NO_OPTION) {
-                    feh.call_shutdown();
-                    // System.exit(0);
+                  	close();
                 }
+                
             }
         });
     }

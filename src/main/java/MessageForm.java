@@ -10,8 +10,13 @@ import javax.swing.JTextArea;
 import javax.swing.JPanel;
 import java.awt.TextArea;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.awt.event.ActionEvent;
 import javax.swing.JSplitPane;
+import javax.swing.event.AncestorListener;
+import javax.swing.event.AncestorEvent;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 
 public class MessageForm {
     private JFrame frame;
@@ -21,6 +26,9 @@ public class MessageForm {
     JTextArea txtareaShow_message;
     JTextArea txtareaShow_lstfriend;
     private FrontendHandler feh;
+    private JTextField txtInput_friends;
+    String fname;
+    String filename;
 
     /**
      * Launch the application.
@@ -52,9 +60,9 @@ public class MessageForm {
     public void setVisible(boolean b) {
         frame.setVisible(b);
     }
-
-    public void newMessage(String message) {
-        txtareaShow_message.append("[You]: ");
+    
+    public void newMessage(String message, String Username) {
+        txtareaShow_message.append("[" + Username + "]: ");
         txtareaShow_message.append(message);
         txtareaShow_message.append("\n");
     }
@@ -66,26 +74,31 @@ public class MessageForm {
     public void Error(String error) {
         JOptionPane.showMessageDialog(null, "Error", error, JOptionPane.ERROR_MESSAGE);
     }
+    
+    public void NewUname(String Newname) {
+    	txtName.setText(Newname); 
+    }
+    
     /**
      * Initialize the contents of the frame.
      */
     private void initialize() {
         frame = new JFrame();
-        frame.setBounds(100, 100, 635, 480);
+        frame.setBounds(100, 100, 635, 508);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
 
         JLabel lblName = new JLabel("Name");
-        lblName.setBounds(23, 35, 68, 14);
+        lblName.setBounds(22, 38, 68, 14);
         frame.getContentPane().add(lblName);
 
         txtName = new JTextField();
-        txtName.setBounds(91, 25, 200, 30);
+        txtName.setBounds(88, 34, 200, 23);
         frame.getContentPane().add(txtName);
         txtName.setColumns(10);
 
         JButton btnGo = new JButton("Go");
-        btnGo.setBounds(352, 30, 100, 23);
+        btnGo.setBounds(298, 34, 54, 23);
         frame.getContentPane().add(btnGo);
         btnGo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -128,22 +141,61 @@ public class MessageForm {
         lblFile.setBounds(10, 408, 46, 14);
         frame.getContentPane().add(lblFile);
 
+        JButton btnBorrow_File = new JButton("...");
+        btnBorrow_File.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+                JFileChooser filedilg=new JFileChooser();
+                filedilg.showOpenDialog(filedilg);
+                filename = filedilg.getSelectedFile().getAbsolutePath();// path of file
+                txtNamefile.setText(filename);
+                File file1 = new File(filename); 
+                fname = file1.getName();// filename  
+                System.out.println("THE FILE NAME IS "+fname);
+            }
+        });
+        btnBorrow_File.setBounds(444, 404, 79, 23);
+        frame.getContentPane().add(btnBorrow_File);
+        
         txtNamefile = new JTextField();
         txtNamefile.setBounds(88, 405, 342, 20);
         frame.getContentPane().add(txtNamefile);
         txtNamefile.setColumns(10);
 
-        JButton btnBorrow_File = new JButton("...");
-        btnBorrow_File.setBounds(444, 404, 79, 23);
-        frame.getContentPane().add(btnBorrow_File);
-
         JButton btnSend_1 = new JButton("Send");
+        btnSend_1.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        		txtareaShow_message.append("[Me]: ");
+                txtareaShow_message.append(fname);
+        	}
+        });
         btnSend_1.setBounds(530, 404, 79, 23);
         frame.getContentPane().add(btnSend_1);
 
         JButton btnExit = new JButton("Exit");
-        btnExit.setBounds(510, 30, 100, 25);
+        btnExit.setBounds(362, 33, 54, 25);
         frame.getContentPane().add(btnExit);
+        
+        JLabel lblUsername = new JLabel("Username:");
+        lblUsername.setBounds(22, 13, 68, 14);
+        frame.getContentPane().add(lblUsername);
+        
+        JLabel lblShowUname = new JLabel("");
+        lblShowUname.setBounds(88, 11, 200, 16);
+        frame.getContentPane().add(lblShowUname);
+        
+        txtInput_friends = new JTextField();
+        txtInput_friends.setBounds(425, 10, 172, 20);
+        frame.getContentPane().add(txtInput_friends);
+        txtInput_friends.setColumns(10);
+        
+        JButton btnCreateGroup = new JButton("Create group");
+        btnCreateGroup.setBounds(487, 34, 111, 23);
+        frame.getContentPane().add(btnCreateGroup);
+        
+        JLabel lblAnnouncement = new JLabel("");
+        lblAnnouncement.setBounds(10, 433, 420, 25);
+        frame.getContentPane().add(lblAnnouncement);
+        
         btnExit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame = new JFrame("Exit");
