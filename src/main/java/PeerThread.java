@@ -71,9 +71,8 @@ public class PeerThread extends Subscriber {
     }
 
     private void receive_file() {
-        filename = null;
         try{
-            FileOutputStream fos = new FileOutputStream("testfile.txt");
+            FileOutputStream fos = new FileOutputStream(filename);
 
             byte[] buffer = new byte[4096];
 		
