@@ -29,12 +29,16 @@ public class Message {
         } else {
             this.file = tosend;
             // read file to set len
+            // InputStream is = new FileInputStream(file);
             // read file to calculate checksum (MD5 maybe?)
         }
     }
 
     public String toString() {
-        return from + "->" + to + ":" + msg;
+        if (file == null)
+            return from + "->" + to + ":" + msg;
+        else
+            return from + "->" + to + ":" + file + "[" + checksum + "]";
     }
 
     public boolean sendfile() {

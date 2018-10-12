@@ -1,7 +1,6 @@
 import java.util.*;
 import java.awt.EventQueue;
 
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -27,16 +26,19 @@ public class MessageForm {
     private JTextField txtName;
     private JTextField txtInput_message;
     private JTextField txtNamefile;
-    JTextArea txtareaShow_message;
+    private JTextArea txtareaShow_message;
     private FrontendHandler feh;
-    DefaultListModel<String> person_List = new DefaultListModel<>();
-    
-    JLabel lblUname = new JLabel("Khoa");
-    JLabel lblIp = new JLabel("IP: 198.168.1.1");
-    JLabel lblPort = new JLabel("Port: 8080");
-    
-    JLabel lblNotify = new JLabel("No new message");
-    
+    String typeRoom[] = {"People", "Room", "Create room"};
+
+    private JComboBox<String> type = new JComboBox<>(typeRoom);
+    private DefaultListModel<String> person_List = new DefaultListModel<>();
+
+    JLabel lblUname = new JLabel();
+    JLabel lblIp = new JLabel();
+    JLabel lblPort = new JLabel();
+
+    JLabel lblNotify = new JLabel("No unread message");
+
     /**
      * Launch the application.
      */
@@ -75,8 +77,10 @@ public class MessageForm {
     }
 
     public void newNotifier(String name) {
-		person_List.addElement(name);
-	}
+        if (person_List.contains(name))
+            return;
+        person_List.addElement(name);
+    }
 
     public void Error(String error) {
         JOptionPane.showMessageDialog(null, "Error", error, JOptionPane.ERROR_MESSAGE);
@@ -84,22 +88,26 @@ public class MessageForm {
     /**
      * Initialize the contents of the frame.
      */
-    
+
     public void setCurrentUserInfo(String name, String IP, String port) {
-    	lblUname.setText(name);
-    	lblIp.setText(IP);
-    	lblPort.setText(port);
+        lblUname.setText(name);
+        lblIp.setText("IP: " + IP);
+        lblPort.setText("Port: " + port);
     }
-    
+
+    public void setnewNotify() {
+        lblNotify.setText("No unread message");
+    }
+
     public void setnewNotify(String name) {
-    	lblNotify.setText("You have new message from " + name);
+        lblNotify.setText("You have new message from " + name);
     }
-    
+
     public void setMessageBoard(List<String> mess_list) {
-    	txtareaShow_message.setText("");
-    	for(String mess: mess_list) {
-    		txtareaShow_message.append(mess + "\n");
-    	}
+        txtareaShow_message.setText("");
+        for (String mess : mess_list) {
+            txtareaShow_message.append(mess + "\n");
+        }
     }
     private void initialize() {
         frame = new JFrame();
@@ -122,7 +130,7 @@ public class MessageForm {
         btnGo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String name = txtName.getText();
-                feh.getIP(name);
+                feh.getIP(name, (String) type.getSelectedItem());
                 txtName.setText("");
             }
         });
@@ -177,56 +185,49 @@ public class MessageForm {
         btnExit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame = new JFrame("Exit");
-                if (JOptionPane.showConfirmDialog(frame, "Confirm if you want to exit",
-                        "Login System", JOptionPane.YES_NO_OPTION)
+                if (JOptionPane.showConfirmDialog(
+                        frame, "Confirm if you want to exit", "ABCD", JOptionPane.YES_NO_OPTION)
                     == JOptionPane.YES_NO_OPTION) {
                     feh.call_shutdown();
                     // System.exit(0);
                 }
             }
         });
-        
-        JList<String> list = new JList<>(person_List);
-		list.setBounds(480, 124, 118, 256);
-		frame.getContentPane().add(list);
-		list.addMouseListener(new MouseAdapter() {
-		    public void mouseClicked(MouseEvent evt) {
-		        JList list = (JList)evt.getSource();
-		        if (evt.getClickCount() == 2) {
 
-		            // Double-click detected
-		            // int index = list.locationToIndex(evt.getPoint());
-		        	System.out.println(list.getSelectedValue());
-		        }
-		    }
-		});
-		
-		lblNotify.setVerticalAlignment(SwingConstants.TOP);
-		lblNotify.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNotify.setBounds(12, 100, 266, 14);
-		frame.getContentPane().add(lblNotify);
-		
-		
-		lblUname.setBounds(10, 12, 70, 15);
-		frame.getContentPane().add(lblUname);
-		
-		
-		lblIp.setBounds(79, 12, 127, 14);
-		frame.getContentPane().add(lblIp);
-		
-		
-		lblPort.setBounds(218, 12, 100, 15);
-		frame.getContentPane().add(lblPort);
-		
-		String typeRoom[]={"People","Room","Create room"};
-		JComboBox type = new JComboBox(typeRoom);
-		type.setBounds(331, 54, 118, 28);
-		frame.getContentPane().add(type);
-		
-		JButton btnSetting = new JButton("Setting");
-		btnSetting.setBounds(331, 7, 117, 25);
-		frame.getContentPane().add(btnSetting);
-		
-		
+        JList<String> list = new JList<>(person_List);
+        list.setBounds(480, 124, 118, 256);
+        frame.getContentPane().add(list);
+        list.addMouseListener(new MouseAdapter() {
+            // on double click people on right hand box
+            public void mouseClicked(MouseEvent evt) {
+                JList<?> list = (JList<?>) evt.getSource();
+                if (evt.getClickCount() == 2) {
+                    // int index = list.locationToIndex(evt.getPoint());
+                    // System.out.println(list.getSelectedValue());
+                    feh.changeCurrentChatUser((String) list.getSelectedValue());
+                }
+            }
+        });
+
+        lblNotify.setVerticalAlignment(SwingConstants.TOP);
+        lblNotify.setHorizontalAlignment(SwingConstants.LEFT);
+        lblNotify.setBounds(12, 100, 266, 14);
+        frame.getContentPane().add(lblNotify);
+
+        lblUname.setBounds(10, 12, 70, 15);
+        frame.getContentPane().add(lblUname);
+
+        lblIp.setBounds(79, 12, 127, 14);
+        frame.getContentPane().add(lblIp);
+
+        lblPort.setBounds(218, 12, 100, 15);
+        frame.getContentPane().add(lblPort);
+
+        type.setBounds(331, 54, 118, 28);
+        frame.getContentPane().add(type);
+
+        JButton btnSetting = new JButton("Setting");
+        btnSetting.setBounds(331, 7, 117, 25);
+        frame.getContentPane().add(btnSetting);
     }
 }

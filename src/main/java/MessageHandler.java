@@ -7,7 +7,6 @@ import java.util.*;
 import com.google.gson.*;
 import com.google.gson.reflect.*;
 
-
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -27,6 +26,8 @@ public class MessageHandler extends Subscriber {
     String Username = null;
     String myIP = null;
     int myPort = 0;
+
+    final int BUFFER_SIZE = 4096;
 
     Gson gson = new Gson();
 
@@ -58,6 +59,7 @@ public class MessageHandler extends Subscriber {
                 String port = r.param().get(2);
                 if (connection.containsKey(username))
                     continue;
+
                 Connection c = new Connection();
                 c.IP = Arrays.asList(myIP, ip);
                 c.port = Arrays.asList(myPort, Integer.parseInt(port));
@@ -73,15 +75,16 @@ public class MessageHandler extends Subscriber {
                 if (c.s == null)
                     create_socket(c);
 
-                try {
-                    Message m = new Message(Username, to, c.IP, c.port, msg, false);
-                    String json_msg = gson.toJson(m);
-                    byte[] encoded_msg = Base64.getEncoder().encode(json_msg.getBytes());
-                    String tosend = new String(encoded_msg);
-
-                    for (DataOutputStream dos : c.dos) dos.writeUTF(tosend);
-                } catch (IOException ex) {
-                    // pass
+                Message m = new Message(Username, to, c.IP, c.port, msg, false);
+                String json_msg = gson.toJson(m);
+                byte[] encoded_msg = Base64.getEncoder().encode(json_msg.getBytes());
+                String tosend = new String(encoded_msg);
+                for (DataOutputStream dos : c.dos) {
+                    try {
+                        dos.writeUTF(tosend);
+                    } catch (IOException ex) {
+                        // pass
+                    }
                 }
             }
 
@@ -90,28 +93,36 @@ public class MessageHandler extends Subscriber {
                 String filedirectory = r.param().get(1);
                 int index = filedirectory.lastIndexOf("\\");
                 String filename = filedirectory.substring(index + 1);
+
                 Connection c = connection.get(to);
                 if (c.s == null)
                     create_socket(c);
-                try {      
-                    Message m = new Message(Username, to, c.IP, c.port, filename, true);
-                    String json_msg = gson.toJson(m);
-                    byte[] encoded_msg = Base64.getEncoder().encode(json_msg.getBytes());
-                    String tosend = new String(encoded_msg);
 
-                    for (DataOutputStream dos : c.dos) dos.writeUTF(tosend);
-                    
-                    byte[] buffer = new byte[4096];
-                    for (DataOutputStream dos : c.dos){
+                Message m = new Message(Username, to, c.IP, c.port, filename, true);
+                String json_msg = gson.toJson(m);
+                byte[] encoded_msg = Base64.getEncoder().encode(json_msg.getBytes());
+                String tosend = new String(encoded_msg);
+
+                for (DataOutputStream dos : c.dos) {
+                    try {
+                        dos.writeUTF(tosend);
+                    } catch (IOException ex) {
+                        // pass
+                    }
+                }
+
+                byte[] buffer = new byte[BUFFER_SIZE];
+                for (DataOutputStream dos : c.dos) {
+                    try {
                         FileInputStream fis = new FileInputStream(new File(filedirectory));
                         while (fis.read(buffer) > 0) {
-                            //System.out.println("file : " + buffer);
+                            // System.out.println("file : " + buffer);
                             dos.write(buffer);
                         }
                         fis.close();
+                    } catch (IOException ex) {
+                        // pass
                     }
-                } catch (IOException ex) {
-                    // pass
                 }
             }
         }
@@ -123,6 +134,8 @@ public class MessageHandler extends Subscriber {
                 Connection c = entry.getValue();
                 for (Socket s : c.s) s.close();
             } catch (IOException ex) {
+                // pass
+            } catch (NullPointerException ex) {
                 // pass
             }
         }
@@ -172,7 +185,7 @@ public class MessageHandler extends Subscriber {
             c.s = new LinkedList<Socket>();
             c.dos = new LinkedList<DataOutputStream>();
             for (int i = 0; i < c.IP.size(); i++) {
-                if (c.IP.get(i) == myIP)
+                if (c.IP.get(i).equals(myIP) && c.port.get(i) == myPort)
                     continue;
                 Socket s = new Socket(c.IP.get(i), c.port.get(i));
                 c.s.add(s);

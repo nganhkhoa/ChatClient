@@ -106,6 +106,7 @@ public class ServerConnector extends Subscriber {
                 }
                 obs.send_answer(r.from(), r);
                 obs.send_answer(ServiceEnum.MESSAGE_HANDLER, r);
+                obs.send_answer(ServiceEnum.FRONTEND_HANDLER, r);
                 continue;
             }
 

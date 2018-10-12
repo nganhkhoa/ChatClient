@@ -49,6 +49,9 @@ public class MessageSwarm extends Subscriber {
         // and message handler to saves IP and port
         obs.notify(new InternalRequest(
             se, ServiceEnum.MESSAGE_HANDLER, "signin", Arrays.asList(IP, Integer.toString(PORT))));
+        // frontend handler too, to let him know the ip and port
+        obs.notify(new InternalRequest(
+            se, ServiceEnum.FRONTEND_HANDLER, "signin", Arrays.asList(IP, Integer.toString(PORT))));
 
         // TODO: Because ServerSocket.accept() blocks until a connection is receive
         // The while checking is never to be asset until a connection is receive
