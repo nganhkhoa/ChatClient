@@ -17,6 +17,15 @@ public class Observer {
         }
     }
 
+    public void send_message(Message m) {
+        for (Subscriber s : subscriber) {
+            if (s.se() == ServiceEnum.MESSAGE_HANDLER) {
+                s.receive_message(m);
+                break;
+            }
+        }
+    }
+
     public void send_answer(ServiceEnum to, InternalRequest r) {
         for (Subscriber s : subscriber) {
             if (s.se() == to) {
