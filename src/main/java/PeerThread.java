@@ -75,7 +75,6 @@ public class PeerThread extends Subscriber {
     }
 
     private void receive_file() throws IOException {
-        FileOutputStream fos = new FileOutputStream(fileName);
 
         byte[] buffer = new byte[BYTE_SIZE];
         int read = 0;
