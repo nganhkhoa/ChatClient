@@ -7,6 +7,12 @@ import java.util.*;
 import com.google.gson.*;
 import com.google.gson.reflect.*;
 
+
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.Socket;
+
 class Connection {
     public List<Socket> s;
     public List<DataOutputStream> dos;
@@ -80,7 +86,33 @@ public class MessageHandler extends Subscriber {
             }
 
             else if (r.task().equals("sendfile")) {
-                // ????
+                String to = r.param().get(0);
+                String filedirectory = r.param().get(1);
+                int index = filedirectory.lastIndexOf("\\");
+                String filename = filedirectory.substring(index + 1);
+                Connection c = connection.get(to);
+                if (c.s == null)
+                    create_socket(c);
+                try {      
+                    Message m = new Message(Username, to, c.IP, c.port, filename, true);
+                    String json_msg = gson.toJson(m);
+                    byte[] encoded_msg = Base64.getEncoder().encode(json_msg.getBytes());
+                    String tosend = new String(encoded_msg);
+
+                    for (DataOutputStream dos : c.dos) dos.writeUTF(tosend);
+                    
+                    byte[] buffer = new byte[4096];
+                    for (DataOutputStream dos : c.dos){
+                        FileInputStream fis = new FileInputStream(new File(filedirectory));
+                        while (fis.read(buffer) > 0) {
+                            //System.out.println("file : " + buffer);
+                            dos.write(buffer);
+                        }
+                        fis.close();
+                    }
+                } catch (IOException ex) {
+                    // pass
+                }
             }
         }
 

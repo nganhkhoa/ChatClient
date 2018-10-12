@@ -1,5 +1,13 @@
 import java.util.*;
 
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+ 
+
 public class FrontendHandler extends Subscriber {
     final LoginForm loginForm;
     final MessageForm messageForm;
@@ -108,6 +116,11 @@ public class FrontendHandler extends Subscriber {
     public void sendMessage(String msg) {
         obs.notify(new InternalRequest(
             se, ServiceEnum.MESSAGE_HANDLER, "sendmessage", Arrays.asList(currentChatUser, msg)));
+    }
+
+    public void sendFile(String filename) {
+        obs.notify(new InternalRequest(
+            se, ServiceEnum.MESSAGE_HANDLER, "sendfile", Arrays.asList(currentChatUser, filename)));
     }
 
     public void call_shutdown() {
