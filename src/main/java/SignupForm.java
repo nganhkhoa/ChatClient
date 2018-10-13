@@ -46,14 +46,12 @@ public class SignupForm {
     }
 
     public void showError(String title, String content) {
-    	JOptionPane.showMessageDialog(
-                null, content , title, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, content, title, JOptionPane.ERROR_MESSAGE);
     }
-    
+
     public void close() {
-    	WindowEvent winClosingEvent = new WindowEvent(
-    		this.frame,WindowEvent.WINDOW_CLOSING);
-    	Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(winClosingEvent);
+        WindowEvent winClosingEvent = new WindowEvent(this.frame, WindowEvent.WINDOW_CLOSING);
+        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(winClosingEvent);
     }
     /**
      * Initialize the contents of the frame.
@@ -90,10 +88,10 @@ public class SignupForm {
         frame.getContentPane().add(btnSubmit);
         btnSubmit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //String password = txtPassword.getText();
+                // String password = txtPassword.getText();
                 String username = txtUsername.getText();
 
-                //System.out.println(password + username);
+                // System.out.println(password + username);
 
                 if (username == null) {
                     JOptionPane.showMessageDialog(

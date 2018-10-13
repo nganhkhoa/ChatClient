@@ -13,6 +13,7 @@ public class ChatClient {
         Subscriber messageSwarm;
         Subscriber frontendHandler;
 
+        // server address selector
         ServerAddrForm saf = new ServerAddrForm();
         saf.setVisible(true);
         while (!saf.okPressed()) {
@@ -20,6 +21,7 @@ public class ChatClient {
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException ex) {
                 // pass
+                return;
             }
         }
 
@@ -60,9 +62,13 @@ public class ChatClient {
 
         try {
             server.join();
+            System.out.println("SERVER_CONNECTOR SHUTDOWN OK");
             messageHandler.join();
+            System.out.println("MESSAGE_HANDLER SHUTDOWN OK");
             frontendHandler.join();
-            //messageSwarm.join();
+            System.out.println("FRONTEND HANDLER SHUTDOWN OK");
+            // not easy to shutdown this
+            // messageSwarm.join();
         } catch (InterruptedException e) {
             // pass
         }

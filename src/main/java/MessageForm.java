@@ -112,13 +112,12 @@ public class MessageForm {
             txtareaShow_message.append(mess + "\n");
         }
     }
-    
+
     public void close() {
-    	WindowEvent winClosingEvent = new WindowEvent(
-    		this.frame,WindowEvent.WINDOW_CLOSING);
-    	Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(winClosingEvent);
+        WindowEvent winClosingEvent = new WindowEvent(this.frame, WindowEvent.WINDOW_CLOSING);
+        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(winClosingEvent);
     }
-    
+
     private void initialize() {
         frame = new JFrame();
         frame.setBounds(100, 100, 635, 480);
@@ -175,7 +174,7 @@ public class MessageForm {
                 feh.sendMessage(message);
             }
         });
-        
+
         JButton btnSend = new JButton("Send Message");
         btnSend.setBounds(493, 388, 101, 23);
         frame.getContentPane().add(btnSend);
