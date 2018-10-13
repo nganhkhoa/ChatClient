@@ -12,6 +12,9 @@ plugins {
 
     // Apply the application plugin to add support for building an application
     id 'application'
+
+    // fat Jar build
+    id 'com.github.johnrengelman.shadow' version '4.0.1'
 }
 
 // Define the main class for the application
@@ -37,4 +40,16 @@ repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+}
+
+jar {
+    manifest {
+        attributes 'Main-class': 'ChatClient'
+    }
+}
+
+shadowJar {
+    baseName = 'ChatClient'
+    classifier = null
+    version = null
 }
