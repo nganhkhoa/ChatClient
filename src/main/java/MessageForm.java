@@ -29,9 +29,9 @@ public class MessageForm {
     private JTextField txtNamefile;
     private JTextArea txtareaShow_message;
     private FrontendHandler feh;
-    String typeRoom[] = {"People", "Room", "Create room"};
+    //String typeRoom[] = {"People", "Room", "Create room"};
 
-    private JComboBox<String> type = new JComboBox<>(typeRoom);
+    private JComboBox<String> type = new JComboBox<>();
     private DefaultListModel<String> person_List = new DefaultListModel<>();
 
     JLabel lblUname = new JLabel();
@@ -124,6 +124,13 @@ public class MessageForm {
         txtName.setBounds(78, 52, 200, 30);
         frame.getContentPane().add(txtName);
         txtName.setColumns(10);
+        txtName.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String name = txtName.getText();
+                feh.getIP(name, (String) type.getSelectedItem());
+                txtName.setText("");
+            }
+        });
 
         JButton btnGo = new JButton("Go");
         btnGo.setBounds(494, 51, 100, 30);
@@ -137,6 +144,7 @@ public class MessageForm {
         });
 
         txtareaShow_message = new JTextArea();
+        txtareaShow_message.setEditable(false);
         txtareaShow_message.setBounds(10, 125, 458, 255);
         frame.getContentPane().add(txtareaShow_message);
 
@@ -148,7 +156,17 @@ public class MessageForm {
         txtInput_message.setBounds(74, 390, 380, 20);
         frame.getContentPane().add(txtInput_message);
         txtInput_message.setColumns(10);
-
+        txtInput_message.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String message = txtInput_message.getText();
+                txtareaShow_message.append("[Me]: ");
+                txtareaShow_message.append(message);
+                txtareaShow_message.append("\n");
+                txtInput_message.setText(null);
+                feh.sendMessage(message);
+            }
+        });
+        
         JButton btnSend = new JButton("Send Message");
         btnSend.setBounds(493, 388, 101, 23);
         frame.getContentPane().add(btnSend);
