@@ -1,4 +1,3 @@
-import java.awt.EventQueue;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -6,13 +5,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
-
-import java.awt.BorderLayout;
 import javax.swing.JTextField;
 import javax.swing.JButton;
-import java.awt.Font;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class SignupForm {
     private JFrame frame;
@@ -51,6 +45,16 @@ public class SignupForm {
         frame.setVisible(b);
     }
 
+    public void showError(String title, String content) {
+    	JOptionPane.showMessageDialog(
+                null, content , title, JOptionPane.ERROR_MESSAGE);
+    }
+    
+    public void close() {
+    	WindowEvent winClosingEvent = new WindowEvent(
+    		this.frame,WindowEvent.WINDOW_CLOSING);
+    	Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(winClosingEvent);
+    }
     /**
      * Initialize the contents of the frame.
      */

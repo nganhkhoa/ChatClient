@@ -12,10 +12,12 @@ import javax.swing.JTextArea;
 import javax.swing.JPanel;
 import javax.swing.JFileChooser;
 import java.awt.TextArea;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 import javax.swing.JSplitPane;
 import javax.swing.JList;
@@ -29,9 +31,9 @@ public class MessageForm {
     private JTextField txtNamefile;
     private JTextArea txtareaShow_message;
     private FrontendHandler feh;
-    //String typeRoom[] = {"People", "Room", "Create room"};
+    String typeRoom[] = {"People", "Room", "Create room"};
 
-    private JComboBox<String> type = new JComboBox<>();
+    private JComboBox<String> type = new JComboBox<>(typeRoom);
     private DefaultListModel<String> person_List = new DefaultListModel<>();
 
     JLabel lblUname = new JLabel();
@@ -110,6 +112,13 @@ public class MessageForm {
             txtareaShow_message.append(mess + "\n");
         }
     }
+    
+    public void close() {
+    	WindowEvent winClosingEvent = new WindowEvent(
+    		this.frame,WindowEvent.WINDOW_CLOSING);
+    	Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(winClosingEvent);
+    }
+    
     private void initialize() {
         frame = new JFrame();
         frame.setBounds(100, 100, 635, 480);

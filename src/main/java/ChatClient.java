@@ -62,7 +62,7 @@ public class ChatClient {
             server.join();
             messageHandler.join();
             frontendHandler.join();
-            messageSwarm.join();
+            //messageSwarm.join();
         } catch (InterruptedException e) {
             // pass
         }

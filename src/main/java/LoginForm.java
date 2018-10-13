@@ -51,6 +51,16 @@ public class LoginForm {
         frame.setVisible(b);
     }
 
+    public void showError(String title, String content) {
+    	JOptionPane.showMessageDialog(
+                null, content , title, JOptionPane.ERROR_MESSAGE);
+    }
+    
+    public void close() { 
+    	WindowEvent winClosingEvent = new WindowEvent(
+    			this.frame,WindowEvent.WINDOW_CLOSING);
+    	Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(winClosingEvent); 
+    }
     /**
      * Initialize the contents of the frame.
      */
@@ -105,13 +115,9 @@ public class LoginForm {
         frame.getContentPane().add(btnExit);
         btnExit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                frame = new JFrame("Exit");
-                if (JOptionPane.showConfirmDialog(frame, "Confirm if you want to exit",
-                        "Login System", JOptionPane.YES_NO_OPTION)
-                    == JOptionPane.YES_NO_OPTION) {
+                
                     feh.call_shutdown();
-                    // System.exit(0);
-                }
+                    
             }
         });
     }

@@ -91,9 +91,9 @@ public class FrontendHandler extends Subscriber {
             }
         }
 
-        loginForm.setVisible(false);
-        messageForm.setVisible(false);
-        signupForm.setVisible(false);
+        loginForm.close();
+        messageForm.close();
+        signupForm.close();
     }
 
     @Override
