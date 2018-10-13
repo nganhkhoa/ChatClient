@@ -192,7 +192,13 @@ public class MessageForm {
         frame.getContentPane().add(btnSend_1);
         btnSend_1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                txtareaShow_message.append("[Me]: FILE:");
+                txtareaShow_message.append(txtNamefile.getText());
+                txtareaShow_message.append("\n");
+                txtInput_message.setText(null);
                 feh.sendFile(txtNamefile.getText());
+
+                txtNamefile.setText("");
             }
         });
 

@@ -84,7 +84,6 @@ public class MessageHandler extends Subscriber {
                         dos.writeUTF(tosend);
                     } catch (IOException ex) {
                         // pass
-                        // TODO: After send file, stuck here?
                     }
                 }
             }
@@ -116,10 +115,10 @@ public class MessageHandler extends Subscriber {
                 byte[] buffer = new byte[BUFFER_SIZE];
                 for (DataOutputStream dos : c.dos) {
                     try {
+                        int count = 0;
                         FileInputStream fis = new FileInputStream(new File(filedirectory));
-                        while (fis.read(buffer) > 0) {
-                            // System.out.println("file : " + buffer);
-                            dos.write(buffer);
+                        while ((count = fis.read(buffer)) > 0) {
+                            dos.write(buffer, 0, count);
                         }
                         dos.flush();
                         fis.close();

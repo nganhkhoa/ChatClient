@@ -73,10 +73,10 @@ public class FrontendHandler extends Subscriber {
                 // new file
                 String username = r.param().get(0);
                 String file = r.param().get(1);
-                String log_msg = "[" + username + "]:FILE: " + file;
+                String log_msg = "[" + username + "]: FILE: " + file;
 
                 if (username.equals(currentChatUser)) {
-                    messageForm.newMessage(username, log_msg);
+                    messageForm.newMessage(username, "FILE: " + file);
                     messageLog.get(username).addFirst(log_msg);
                 }
 
@@ -181,12 +181,17 @@ public class FrontendHandler extends Subscriber {
     }
 
     public void sendMessage(String msg) {
+        if (currentChatUser == null)
+            return;
         messageLog.get(currentChatUser).addFirst("[Me]: " + msg);
         obs.notify(new InternalRequest(
             se, ServiceEnum.MESSAGE_HANDLER, "sendmessage", Arrays.asList(currentChatUser, msg)));
     }
 
     public void sendFile(String filename) {
+        if (currentChatUser == null)
+            return;
+        messageLog.get(currentChatUser).addFirst("[Me]: FILE: " + filename);
         obs.notify(new InternalRequest(
             se, ServiceEnum.MESSAGE_HANDLER, "sendfile", Arrays.asList(currentChatUser, filename)));
     }

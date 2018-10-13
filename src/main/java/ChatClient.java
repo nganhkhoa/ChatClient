@@ -2,6 +2,7 @@ import java.io.*;
 import java.net.*;
 import java.lang.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class ChatClient {
     public static void main(String[] argv) {
@@ -12,8 +13,18 @@ public class ChatClient {
         Subscriber messageSwarm;
         Subscriber frontendHandler;
 
+        ServerAddrForm saf = new ServerAddrForm();
+        saf.setVisible(true);
+        while (!saf.okPressed()) {
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException ex) {
+                // pass
+            }
+        }
+
         try {
-            server = new ServerConnector(observer, "localhost");
+            server = new ServerConnector(observer, saf.getAddr());
         } catch (IOException e) {
             System.out.println("Cannot connect to server");
             return;

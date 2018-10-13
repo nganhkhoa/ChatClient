@@ -8,6 +8,7 @@ import com.google.gson.*;
 import com.google.gson.reflect.*;
 
 public class ServerConnector extends Subscriber {
+    final private int PORT = 7789;
     private Socket s;
     private DataInputStream dis;
     private DataOutputStream dos;
@@ -30,9 +31,11 @@ public class ServerConnector extends Subscriber {
         // server ip
         ip = InetAddress.getByName(serverAddress);
 
-        s = new Socket(ip, 7789);
+        s = new Socket(ip, PORT);
         dis = new DataInputStream(s.getInputStream());
         dos = new DataOutputStream(s.getOutputStream());
+
+        System.out.println("[SC]::Connected to " + serverAddress + " on port " + PORT);
     }
 
     public void run() {

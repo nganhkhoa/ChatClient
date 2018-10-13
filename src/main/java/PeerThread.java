@@ -60,6 +60,7 @@ public class PeerThread extends Subscriber {
                 obs.send_message(msg);
             } catch (IOException ex) {
                 // disconnected
+                System.out.println("[P]::Disconnected");
                 break;
             } catch (IllegalArgumentException ex) {
                 System.out.println("[P]::Receive from server is not valid base64");
@@ -73,12 +74,13 @@ public class PeerThread extends Subscriber {
 
     private void receive_file() throws IOException {
         FileOutputStream fos = new FileOutputStream(fileName);
+        InputStream inFile = socket.getInputStream();
         byte[] buffer = new byte[BYTE_SIZE];
         int read = 0;
         int totalRead = 0;
         int remaining = fileSize;
         System.out.println("[P]::Receiving file");
-        while ((read = dis.read(buffer, 0, Math.min(buffer.length, remaining))) > 0) {
+        while ((read = inFile.read(buffer, 0, Math.min(buffer.length, remaining))) > 0) {
             totalRead += read;
             remaining -= read;
             // System.out.println("read " + totalRead + " bytes.");
