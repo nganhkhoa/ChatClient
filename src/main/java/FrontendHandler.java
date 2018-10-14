@@ -56,7 +56,7 @@ public class FrontendHandler extends Subscriber {
 
                 if (username.equals(currentChatUser)) {
                     messageForm.newMessage(username, msg);
-                    messageLog.get(username).addFirst(log_msg);
+                    messageLog.get(username).addLast(log_msg);
                 }
 
                 else {
@@ -65,7 +65,7 @@ public class FrontendHandler extends Subscriber {
                     if (!messageLog.containsKey(username)) {
                         messageLog.put(username, new LinkedList<String>(Arrays.asList(log_msg)));
                     } else
-                        messageLog.get(username).addFirst(log_msg);
+                        messageLog.get(username).addLast(log_msg);
                 }
             }
 
@@ -77,7 +77,7 @@ public class FrontendHandler extends Subscriber {
 
                 if (username.equals(currentChatUser)) {
                     messageForm.newMessage(username, "FILE: " + file);
-                    messageLog.get(username).addFirst(log_msg);
+                    messageLog.get(username).addLast(log_msg);
                 }
 
                 else {
@@ -86,7 +86,23 @@ public class FrontendHandler extends Subscriber {
                     if (!messageLog.containsKey(username)) {
                         messageLog.put(username, new LinkedList<String>(Arrays.asList(log_msg)));
                     } else
-                        messageLog.get(username).addFirst(log_msg);
+                        messageLog.get(username).addLast(log_msg);
+                }
+            }
+
+            else if (r.task().equals("disconnected")) {
+                String username = r.param().get(0);
+                String log_msg = "[SYSTEM]: USER DISCONNECTED";
+                if (username.equals(currentChatUser)) {
+                    messageForm.newMessage("SYSTEM", "USER DISCONNECTED");
+                    messageLog.get(username).addLast(log_msg);
+                }
+
+                else {
+                    if (!messageLog.containsKey(username)) {
+                        messageLog.put(username, new LinkedList<String>(Arrays.asList(log_msg)));
+                    } else
+                        messageLog.get(username).addLast(log_msg);
                 }
             }
         }
@@ -183,7 +199,7 @@ public class FrontendHandler extends Subscriber {
     public void sendMessage(String msg) {
         if (currentChatUser == null)
             return;
-        messageLog.get(currentChatUser).addFirst("[Me]: " + msg);
+        messageLog.get(currentChatUser).addLast("[Me]: " + msg);
         obs.notify(new InternalRequest(
             se, ServiceEnum.MESSAGE_HANDLER, "sendmessage", Arrays.asList(currentChatUser, msg)));
     }
@@ -191,7 +207,7 @@ public class FrontendHandler extends Subscriber {
     public void sendFile(String filename) {
         if (currentChatUser == null)
             return;
-        messageLog.get(currentChatUser).addFirst("[Me]: FILE: " + filename);
+        messageLog.get(currentChatUser).addLast("[Me]: FILE: " + filename);
         obs.notify(new InternalRequest(
             se, ServiceEnum.MESSAGE_HANDLER, "sendfile", Arrays.asList(currentChatUser, filename)));
     }

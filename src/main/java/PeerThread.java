@@ -21,6 +21,8 @@ public class PeerThread extends Subscriber {
     final int BYTE_SIZE = 4096;
     Gson gson;
 
+    String username;
+
     // only for receiving files
     int fileSize = 0;
     String fileName;
@@ -48,6 +50,10 @@ public class PeerThread extends Subscriber {
                 String json_msg = new String(Base64.getDecoder().decode(encoded_msg));
                 msg = gson.fromJson(json_msg, Message.class);
 
+                if (username == null) {
+                    username = msg.from;
+                }
+
                 if (msg.file != null) {
                     fileName = msg.file;
                     fileSize = msg.len;
@@ -61,6 +67,8 @@ public class PeerThread extends Subscriber {
             } catch (IOException ex) {
                 // disconnected
                 System.out.println("[P]::Disconnected");
+                obs.notify(new InternalRequest(ServiceEnum.MESSAGE_SWARM,
+                    ServiceEnum.FRONTEND_HANDLER, "disconnected", Arrays.asList(username)));
                 break;
             } catch (IllegalArgumentException ex) {
                 System.out.println("[P]::Receive from server is not valid base64");
