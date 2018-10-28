@@ -35,6 +35,7 @@ public class MessageForm {
 
     private JComboBox<String> type = new JComboBox<>(typeRoom);
     private DefaultListModel<String> person_List = new DefaultListModel<>();
+    private DefaultListModel<String> online_List = new DefaultListModel<>();
 
     JLabel lblUname = new JLabel();
     JLabel lblIp = new JLabel();
@@ -118,9 +119,14 @@ public class MessageForm {
         Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(winClosingEvent);
     }
 
+    public void online_list(String name) {
+    	if (online_List.contains(name))
+            return;
+        online_List.addElement(name);
+    }
     private void initialize() {
-        frame = new JFrame();
-        frame.setBounds(100, 100, 635, 480);
+c       frame = new JFrame();
+        frame.setBounds(100, 100, 749, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
 
@@ -278,5 +284,24 @@ public class MessageForm {
         JButton btnSetting = new JButton("Setting");
         btnSetting.setBounds(331, 7, 117, 25);
         frame.getContentPane().add(btnSetting);
+        
+        JList lstOnline = new JList();
+        lstOnline.setBounds(608, 125, 115, 255);
+        frame.getContentPane().add(lstOnline);
+        lstOnline.addMouseListener(new MouseAdapter() {
+            // on double click people on right hand box
+            public void mouseClicked(MouseEvent evt) {
+                JList<?> lstOnline = (JList<?>) evt.getSource();
+                if (evt.getClickCount() == 2) {
+                    // int index = list.locationToIndex(evt.getPoint());
+                    // System.out.println(list.getSelectedValue());
+                    feh.changeCurrentChatUser((String) lstOnline.getSelectedValue());
+                }
+            }
+        });
+        
+        JLabel lblOnlineUsers = new JLabel("Online Users");
+        lblOnlineUsers.setBounds(608, 100, 87, 14);
+        frame.getContentPane().add(lblOnlineUsers);
     }
 }
